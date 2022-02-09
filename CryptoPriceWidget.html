@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!--
+  <link href="styles.css" rel="stylesheet">
+  <script defer src="script.js"></script>-->
+  <title>Clock</title>
+</head>
+
+<body>
+    <style>
+        body {
+            margin: 0;
+            background-color: rgba(0,0,0,0);
+            height: fit-content;
+            width: fit-content;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+            'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+            sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        select {
+            outline: none;
+            border: none;
+            cursor: pointer;
+            background-color: #ffffff;
+            color: #6c6a65;
+            border: 1px solid #e8e7e4;
+            border-radius: 3px;
+        }
+
+        label {
+            font-family: 'Open Sans', sans-serif;
+            color: #37352f;
+            font-weight: 700;
+        }
+
+        input{
+            height:15px;
+            font-size: 16px;
+            outline: none;
+            border: none;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Open Sans', sans-serif;
+            color: #37352f;
+            font-weight: 700;
+        }
+
+        .container {
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            max-width: 960px;
+            min-width: 260px;
+            width: max-content;
+            padding: 15px 12px;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+            border: 1px solid #d5d5d5;
+            border-radius: 4px;
+            box-shadow: 0px 2px 3px 0 rgba(0, 0, 0, 0.1);
+
+        }
+
+        .mainWrapper {
+            width: 100%;
+            height: 23px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #coinWrapper{
+            width: 100%;
+            display: none;
+            justify-content: flex-start;
+        }
+        
+        .coinInfo{
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Open Sans', sans-serif;
+            color: #37352f;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .coinInfoItem {
+        }
+
+        .actions{
+            display: flex;
+            margin-right: 10px;
+        }
+
+        #editWrapper {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        #coins{
+
+            width: 60px;
+        }
+
+        .radioList{
+            display:flex;
+        }
+        .radioList input[type=radio]{
+            height: 15px;
+            width: 15px;
+        }
+
+        .form{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items:center;
+            flex-direction: row;
+        }
+
+        .formItem {
+            margin-right: 10px;
+        }
+
+        .buttonTransparent {
+            margin: 0px;
+            padding: 0px;
+            cursor: pointer;
+            border: none;
+            background-color: inherit;
+            color: #6c6a65;
+            font-size: 8px;
+            color: #aaa9a5;
+        }
+
+        .buttonGrey{
+            width: 100%;
+            font-family: 'Open Sans', sans-serif;
+
+            font-weight: 500;
+            cursor: pointer;
+            outline: none;
+            border: none;
+            background-color: #ffffff;
+            color: #6c6a65;
+            border: 1px solid #d5d5d5;
+            border-radius: 3px;
+        }
+        .buttonGrey:hover{
+            background-color: #f9f9f8;
+            color: #6c6a65;
+            border: 1px solid #d5d5d5;
+           
+        }
+    </style>
+    <script>
+        var code, currency = "";
+        
+        var cryptos = {
+            "BTC":"bitcoin",
+            "ETH":"ethereum",
+            "SOL":"solana",
+            "ADA":"cardano",
+            "XRP":"xrp",
+            "DOT":"polkadot",
+            "AVAX":"avalanche",
+            "LUNA":"terra",
+            "USDT":"tether",
+
+        }
+        function displayCoinInfo() {
+            var x = document.getElementById("coinWrapper");
+                x.style.display = "flex";
+        }
+
+        function toggleExpandForm() {
+            var z = document.getElementById("coinWrapper");
+            var x = document.getElementById("editWrapper");
+            if (x.style.display === "none") {
+                x.style.display = "flex";
+                z.style.display = "none";
+            } else {
+                x.style.display = "none";
+                z.style.display = "flex";
+            }
+        }
+
+        function formSubmit() {
+            code = document.forms["form"]["coins"].value;
+            name = cryptos[code];
+            if(!name) {
+                name="bitcoin"
+                code="BTC"
+            }
+            currency = document.forms["form"]["currencyForm"].value
+            let url = "https://api.coingecko.com/api/v3/simple/price?ids="+ name +"&vs_currencies=" + currency;
+
+            httpGet(url);
+        };
+
+        function setPrice(res) {
+            let obj = JSON.parse(res)
+            document.getElementById("coinName").innerHTML = name[0].toUpperCase() + name.slice(1);
+            document.getElementById("coinCode").innerHTML = code.toUpperCase();
+            document.getElementById("coinCurrency").innerHTML = currency.toUpperCase();
+            document.getElementById("coinPrice").innerHTML = obj[name][currency] || 0;
+            toggleExpandForm();
+            displayCoinInfo()
+        }
+
+        function httpGet(url) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function() { 
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                setPrice(xmlHttp.responseText);
+            }
+            xmlHttp.open("GET", url, true); // true for asynchronous 
+            xmlHttp.send(null);
+        }
+    </script>
+
+  <div class="container">
+    <div class="mainWrapper">
+        <div id="coinWrapper">
+            <div class="actions">
+                <button onclick="toggleExpandForm()" class="buttonTransparent" type="button"><i class="fas fa-pen fa-lg"></i></button>
+            </div>
+            <div class="coinInfo">
+                <div class="coinInfoLeft">
+                    <span id="coinName" class="coinInfoItem"></span>
+                    <span id="coinCode" class="coinInfoItem"></span>
+                </div>
+                <div class="coinInfoRight">
+                    <span id="coinPrice" class="coinInfoItem"></span>
+                    <span id="coinCurrency" class="coinInfoItem"></span>
+                </div>
+            </div>
+        </div>
+        <div id="editWrapper">
+            <div class="actions">
+                <button onclick="toggleExpandForm()" class="buttonTransparent" type="button"><i class="fas fa-times fa-2x"></i></button>
+            </div>
+            <form name="form" class="form" onsubmit="formSubmit(); return false;">
+                <div class="formItem">
+                    <input id="coins" name="coins" type="text" placeholder="TICKER" >
+                </div>
+                <div class="formItem">
+                    <div class="radioList">
+                        <input type="radio"  id="radio1" name="currencyForm" value="usd" checked>
+                        <label for="radio1">USD</label>
+                        <input type="radio"  id="radio2" name="currencyForm" value="eur">
+                        <label for="radio2">EUR</label>
+                    </div>
+                </div>
+                <button  type="submit" class="buttonGrey" >Save</button>
+            </form>
+        </div>
+    </div>
+  </div>
+</body>
+</html>
